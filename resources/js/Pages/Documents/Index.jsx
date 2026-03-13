@@ -441,10 +441,10 @@ export default function DocumentsIndex() {
                                 </select>
                             </div>
 
-                            {/* Filtre par date  */}
+                            {/* Filtre par date */}
                             <div>
                                 <label className="block text-xs text-gray-500 dark:text-gray-400 mb-1">
-                                    Date début
+                                    Date
                                 </label>
                                 <input
                                     type="date"
@@ -502,8 +502,7 @@ export default function DocumentsIndex() {
                     filters.category_id ||
                     filters.tags.length > 0 ||
                     filters.author_id ||
-                    filters.date_from ||
-                    filters.date_to ||
+                    filters.date ||
                     filters.file_type ||
                     filters.status) && (
                     <div className="mt-3 flex flex-wrap items-center gap-2 text-sm">
@@ -542,6 +541,32 @@ export default function DocumentsIndex() {
                                 <button
                                     onClick={() =>
                                         handleFilterChange("tags", [])
+                                    }
+                                    className="ml-1"
+                                >
+                                    <X size={14} />
+                                </button>
+                            </span>
+                        )}
+                        {filters.date && (
+                            <span className="px-2 py-1 bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300 rounded-full flex items-center">
+                                Date : {filters.date}
+                                <button
+                                    onClick={() =>
+                                        handleFilterChange("date", "")
+                                    }
+                                    className="ml-1"
+                                >
+                                    <X size={14} />
+                                </button>
+                            </span>
+                        )}
+                        {filters.date && (
+                            <span className="px-2 py-1 bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300 rounded-full flex items-center">
+                                Date : {filters.date}
+                                <button
+                                    onClick={() =>
+                                        handleFilterChange("date", "")
                                     }
                                     className="ml-1"
                                 >

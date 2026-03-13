@@ -41,12 +41,8 @@ class UserController extends Controller
         }
         
         // Filtre par date de création
-        if ($request->has('date_from') && !empty($request->date_from)) {
-            $query->whereDate('created_at', '>=', $request->date_from);
-        }
-        
-        if ($request->has('date_to') && !empty($request->date_to)) {
-            $query->whereDate('created_at', '<=', $request->date_to);
+        if ($request->has('date') && !empty($request->date)) {
+            $query->whereDate('created_at', $request->date);
         }
         
         // Tri

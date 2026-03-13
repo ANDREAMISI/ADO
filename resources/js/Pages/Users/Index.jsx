@@ -34,8 +34,7 @@ export default function UsersIndex() {
     const [filters, setFilters] = useState({
         role: "",
         is_active: "",
-        date_from: "",
-        date_to: "",
+        date: "",
         sort_by: "created_at",
         sort_order: "desc",
     });
@@ -71,9 +70,7 @@ export default function UsersIndex() {
             if (filters.role) params.append("role", filters.role);
             if (filters.is_active !== "")
                 params.append("is_active", filters.is_active);
-            if (filters.date_from)
-                params.append("date_from", filters.date_from);
-            if (filters.date_to) params.append("date_to", filters.date_to);
+            if (filters.date) params.append("date", filters.date);
             if (filters.sort_by) params.append("sort_by", filters.sort_by);
             if (filters.sort_order)
                 params.append("sort_order", filters.sort_order);
@@ -108,8 +105,7 @@ export default function UsersIndex() {
         setFilters({
             role: "",
             is_active: "",
-            date_from: "",
-            date_to: "",
+            date: "",
             sort_by: "created_at",
             sort_order: "desc",
         });
@@ -184,8 +180,7 @@ export default function UsersIndex() {
     const hasActiveFilters =
         filters.role ||
         filters.is_active !== "" ||
-        filters.date_from ||
-        filters.date_to;
+        filters.date;
 
     return (
         <AdminLayout>
@@ -322,35 +317,17 @@ export default function UsersIndex() {
                                 </select>
                             </div>
 
-                            {/* Filtre par date de début */}
+                            {/* Filtre par date */}
                             <div>
                                 <label className="block text-sm font-medium text-gray-600 mb-1">
-                                    Date début
+                                    Date
                                 </label>
                                 <input
                                     type="date"
-                                    value={filters.date_from}
+                                    value={filters.date}
                                     onChange={(e) =>
                                         handleFilterChange(
-                                            "date_from",
-                                            e.target.value,
-                                        )
-                                    }
-                                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                />
-                            </div>
-
-                            {/* Filtre par date de fin */}
-                            <div>
-                                <label className="block text-sm font-medium text-gray-600 mb-1">
-                                    Date fin
-                                </label>
-                                <input
-                                    type="date"
-                                    value={filters.date_to}
-                                    onChange={(e) =>
-                                        handleFilterChange(
-                                            "date_to",
+                                            "date",
                                             e.target.value,
                                         )
                                     }
