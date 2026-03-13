@@ -15,7 +15,7 @@ class RolePermissionSeeder extends Seeder
         // Réinitialiser le cache
         app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
 
-        // Créer les permissions
+        // Créer les permissions (éviter les doublons)
         $permissions = [
             'view documents',
             'create documents',
@@ -28,13 +28,13 @@ class RolePermissionSeeder extends Seeder
         ];
 
         foreach ($permissions as $permission) {
-            Permission::create(['name' => $permission]);
+            Permission::firstOrCreate(['name' => $permission]);
         }
 
         // Créer les rôles
-        $reader = Role::create(['name' => 'reader']);
-        $contributor = Role::create(['name' => 'contributor']);
-        $admin = Role::create(['name' => 'admin']);
+        $reader = Role::firstOrCreate(['name' => 'reader']);
+        $contributor = Role::firstOrCreate(['name' => 'contributor']);
+        $admin = Role::firstOrCreate(['name' => 'admin']);
 
         // Assigner les permissions
         $reader->givePermissionTo(['view documents', 'download documents']);
@@ -47,25 +47,28 @@ class RolePermissionSeeder extends Seeder
         $admin->givePermissionTo(Permission::all());
 
         // Créer des utilisateurs de test
-        $adminUser = User::create([
+        $adminUser = User::firstOrCreate([
+            'email' => 'admin@test.com'
+        ], [
             'name' => 'Admin',
-            'email' => 'admin@test.com',
             'password' => Hash::make('password'),  
             'is_active' => true
         ]);
         $adminUser->assignRole('admin');
 
-        $contributorUser = User::create([
+        $contributorUser = User::firstOrCreate([
+            'email' => 'contributor@test.com'
+        ], [
             'name' => 'Contributeur',
-            'email' => 'contributor@test.com',
             'password' => Hash::make('password'),
             'is_active' => true
         ]);
         $contributorUser->assignRole('contributor');
 
-        $readerUser = User::create([
+        $readerUser = User::firstOrCreate([
+            'email' => 'reader@test.com'
+        ], [
             'name' => 'Lecteur',
-            'email' => 'reader@test.com',
             'password' => Hash::make('password'),
             'is_active' => true
         ]);

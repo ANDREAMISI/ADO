@@ -85,40 +85,35 @@ Route::middleware(['auth'])->group(function () {
 
     // Routes admin seulement
     Route::middleware(['role:admin'])->prefix('admin')->name('admin.')->group(function () {
-        Route::get('/users', function () {
-            return Inertia::render('Users/Index');
-        })->name('users.index');
-         // NOUVELLE ROUTE POUR LES DEMANDES
+        // NOUVELLE ROUTE POUR LES DEMANDES
         Route::get('/access-requests', function () {
             return Inertia::render('Admin/AccessRequest/Index');
         })->name('access-requests.index');
-        Route::get('/users/create', function () {
-            return Inertia::render('Users/Create');
-        })->name('users.create');
-        
-        Route::get('/users/{id}/edit', function ($id) {
-            return Inertia::render('Users/Edit', ['id' => $id]);
-        })->name('users.edit');
         
         Route::get('/access-logs', function () {
             return Inertia::render('AccessLogs/Index');
         })->name('logs.index');
 
-        Route::get('/documents/{id}', function ($id) {
-            return Inertia::render('Documents/Show', ['id' => $id]);
-        })->name('documents.show');
-        
         // Route stats accessible aux admins
         Route::get('/stats', function () {
             return Inertia::render('Stats/Index');
         })->name('stats.index');
     });
     
-    // Routes accessibles depuis le sidebar (admin only)
-    Route::middleware(['auth'])->get('/users', function () {
-        // Rediriger vers admin.users si admin
-        return Inertia::render('Users/Index');
-    })->name('users.index');
+    // Routes utilisateurs (admin seulement)
+    Route::middleware(['role:admin'])->prefix('users')->name('users.')->group(function () {
+        Route::get('/', function () {
+            return Inertia::render('Users/Index');
+        })->name('index');
+        
+        Route::get('/create', function () {
+            return Inertia::render('Users/Create');
+        })->name('create');
+        
+        Route::get('/{id}/edit', function ($id) {
+            return Inertia::render('Users/Edit', ['id' => $id]);
+        })->name('edit');
+    });
     
     Route::middleware(['auth'])->get('/access-logs', function () {
         return Inertia::render('AccessLogs/Index');
