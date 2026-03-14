@@ -65,6 +65,11 @@ class DocumentController extends Controller
                 $query->where('status', $request->status);
             }
 
+            // FILTRE MES DOCUMENTS (pour contributeurs et admins)
+            if ($request->has('filter') && $request->filter === 'mine') {
+                $query->where('user_id', auth()->id());
+            }
+
             // TRI
             $sortField = $request->get('sort_by', 'created_at');
             $sortOrder = $request->get('sort_order', 'desc');
