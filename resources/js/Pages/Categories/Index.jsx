@@ -39,7 +39,6 @@ export default function CategoriesIndex() {
     const fetchCategories = async () => {
         try {
             const response = await axios.get("/web-api/categories");
-            console.log("Catégories reçues:", response.data);
             setCategories(response.data || []);
         } catch (error) {
             console.error("Erreur:", error);

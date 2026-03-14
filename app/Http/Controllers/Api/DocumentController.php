@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Document;
-use App\Models\Category;
+use App\Models\DocumentView;
 use App\Models\Tag;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -21,7 +21,7 @@ class DocumentController extends Controller
     public function index(Request $request)
     {
         try {
-            $query = Document::with(['category', 'user', 'tags']);
+            $query = Document::with(['category' => function($q) { $q->withDefault(); }, 'user' => function($q) { $q->withDefault(); }]);
 
             // RECHERCHE PAR MOT-CLÉ
             if ($request->has('search') && !empty($request->search)) {
@@ -346,6 +346,39 @@ class DocumentController extends Controller
         } catch (\Exception $e) {
             Log::error('Erreur téléchargement:', ['error' => $e->getMessage()]);
             return response()->json(['message' => 'Erreur de téléchargement'], 500);
+        }
+    }
+
+    /**
+     * Obtenir la liste des viewers d'un document
+     */
+    public function viewers(Request $request, Document $document)
+    {
+        try {
+            $type = $request->query('type', 'view'); // 'view' ou 'download'
+
+            $viewers = DocumentView::where('document_id', $document->id)
+                ->where('action_type', $type)
+                ->with('user:id,name,email')
+                ->orderBy('viewed_at', 'desc')
+                ->get()
+                ->map(function ($view) {
+                    return [
+                        'id' => $view->id,
+                        'user' => $view->user,
+                        'created_at' => $view->viewed_at,
+                        'action_type' => $view->action_type,
+                    ];
+                });
+
+            return response()->json([
+                'viewers' => $viewers,
+                'total' => $viewers->count(),
+            ]);
+
+        } catch (\Exception $e) {
+            Log::error('Erreur viewers:', ['error' => $e->getMessage()]);
+            return response()->json(['message' => 'Erreur lors de la récupération des viewers'], 500);
         }
     }
 }

@@ -60,7 +60,7 @@ class Document extends Model
     public function viewers()
     {
         return $this->belongsToMany(User::class, 'document_views')
-            ->withPivot('viewed_at', 'ip_address', 'user_agent')
+            ->withPivot('action_type', 'viewed_at', 'ip_address', 'user_agent')
             ->orderBy('document_views.viewed_at', 'desc');
     }
 

@@ -36,7 +36,6 @@ export default function TagsIndex() {
     const fetchTags = async () => {
         try {
             const response = await axios.get("/web-api/tags");
-            console.log("Tags reçus:", response.data);
             setTags(response.data.data || []);
         } catch (error) {
             console.error("Erreur chargement tags:", error);
@@ -48,7 +47,6 @@ export default function TagsIndex() {
     const fetchPopularTags = async () => {
         try {
             const response = await axios.get("/web-api/tags/popular");
-            console.log("Tags populaires:", response.data);
             setPopularTags(response.data.data || []);
         } catch (error) {
             console.error("Erreur tags populaires:", error);

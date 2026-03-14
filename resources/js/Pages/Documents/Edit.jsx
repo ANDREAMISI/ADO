@@ -81,9 +81,8 @@ export default function Edit({ id }) {
         try {
             const response = await axios.put(`/web-api/documents/${id}`, data);
 
-            if (response.data.redirect) {
-                window.location.href = response.data.redirect;
-            }
+            toast.success("Document mis à jour avec succès");
+            window.location.href = "/documents";
         } catch (error) {
             console.error("Erreur mise à jour:", error);
             if (error.response?.data?.message) {

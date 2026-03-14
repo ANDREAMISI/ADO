@@ -6,7 +6,6 @@ export function usePermissions() {
     const roles = user?.roles || [];
 
     // Debug: vérifier les rôles reçus (à supprimer en production)
-    console.log("[Permissions] User:", user?.name, "Roles:", roles);
 
     const hasRole = (role) => roles.includes(role);
     const hasAnyRole = (roleList) =>

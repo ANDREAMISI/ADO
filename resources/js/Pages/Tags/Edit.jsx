@@ -54,7 +54,15 @@ export default function Edit() {
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
-        setFormData((prev) => ({ ...prev, [name]: value }));
+        if (name === 'color') {
+            // Validate hex color
+            const hexRegex = /^#[0-9A-Fa-f]{6}$/;
+            if (hexRegex.test(value) || value === '') {
+                setFormData((prev) => ({ ...prev, [name]: value }));
+            }
+        } else {
+            setFormData((prev) => ({ ...prev, [name]: value }));
+        }
     };
 
     const handleSubmit = async (e) => {
