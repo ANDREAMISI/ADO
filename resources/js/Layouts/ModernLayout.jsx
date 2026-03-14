@@ -1,9 +1,10 @@
 // resources/js/Layouts/ModernLayout.jsx
 import { Toaster } from "react-hot-toast";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link, usePage, router } from "@inertiajs/react";
 import { usePermissions } from "@/Hooks/usePermissions";
 import { useDarkMode } from "@/Hooks/useDarkMode";
+import axios from "axios";
 import {
     Home,
     FileText,
@@ -30,13 +31,28 @@ import {
 } from "lucide-react";
 
 export default function ModernLayout({ children }) {
-    const { user, can, isAdmin } = usePermissions(); // Ajout de isAdmin
+    const { user, can, isAdmin, isContributor, isReader } = usePermissions(); // Ajout des rôles
     const { theme, toggleTheme, isDark } = useDarkMode();
     const [sidebarOpen, setSidebarOpen] = useState(true);
     const [profileMenuOpen, setProfileMenuOpen] = useState(false);
     const [searchQuery, setSearchQuery] = useState("");
     const [searchResults, setSearchResults] = useState([]);
     const [showSearchResults, setShowSearchResults] = useState(false);
+    const [notifications, setNotifications] = useState({ count: 0, has_notifications: false });
+
+    // Fetch notifications on mount
+    useEffect(() => {
+        const fetchNotifications = async () => {
+            try {
+                const response = await axios.get('/web-api/notifications');
+                setNotifications(response.data);
+            } catch (error) {
+                console.error('Erreur chargement notifications:', error);
+            }
+        };
+
+        fetchNotifications();
+    }, []);
 
     // Fonction de déconnexion avec Inertia
     const handleLogout = (e) => {
@@ -64,120 +80,91 @@ export default function ModernLayout({ children }) {
         }
     };
 
-    // Dossiers documentaires - ADMIN VOIT TOUT
-    const documentFolders = [
-        { name: "Contrats", items: 12, show: true },
-        { name: "Factures", items: 24, show: true },
-        { name: "Rapports annuels", items: 8, show: true },
-        {
-            name: "Documents sensibles",
-            items: 5,
-            show: isAdmin ? true : can.manageUsers,
-        }, // Admin voit toujours
-    ].filter((f) => f.show);
+    // Configuration dynamique selon le rôle
+    const getRoleConfig = () => {
+        if (isAdmin) {
+            return {
+                roleName: "Administrateur",
+                roleColor: "red",
+                documentFolders: [
+                    { name: "Contrats", items: 12, show: true },
+                    { name: "Factures", items: 24, show: true },
+                    { name: "Rapports annuels", items: 8, show: true },
+                    { name: "Documents sensibles", items: 5, show: true },
+                ],
+                mainNavigation: [
+                    { name: "Dashboard", href: "/dashboard", icon: Home, color: "blue", show: true },
+                    { name: "Tous les documents", href: "/documents", icon: FileText, color: "green", show: true },
+                    { name: "Upload", href: "/documents/upload", icon: Upload, color: "purple", show: true },
+                    { name: "Catégories", href: "/categories", icon: FolderTree, color: "orange", show: true },
+                    { name: "Tags", href: "/tags", icon: Tags, color: "pink", show: true },
+                    { name: "Utilisateurs", href: "/users", icon: Users, color: "indigo", show: true },
+                    { name: "Statistiques", href: "/stats", icon: BarChart3, color: "yellow", show: true },
+                ],
+                quickAccess: [
+                    { name: "Documents récents", href: "/documents?sort=recent", icon: Clock, color: "blue", show: true },
+                    { name: "Les plus consultés", href: "/documents?sort=views", icon: Eye, color: "green", show: true },
+                    { name: "Demandes d'accès", href: "/admin/access-requests", icon: Users, color: "red", show: true },
+                    { name: "Logs d'accès", href: "/access-logs", icon: History, color: "gray", show: true },
+                ]
+            };
+        } else if (isContributor) {
+            return {
+                roleName: "Contributeur",
+                roleColor: "blue",
+                documentFolders: [
+                    { name: "Contrats", items: 12, show: true },
+                    { name: "Factures", items: 24, show: true },
+                    { name: "Rapports annuels", items: 8, show: true },
+                ],
+                mainNavigation: [
+                    { name: "Dashboard", href: "/dashboard", icon: Home, color: "blue", show: true },
+                    { name: "Tous les documents", href: "/documents", icon: FileText, color: "green", show: true },
+                    { name: "Upload", href: "/documents/upload", icon: Upload, color: "purple", show: true },
+                    { name: "Catégories", href: "/categories", icon: FolderTree, color: "orange", show: true },
+                    { name: "Tags", href: "/tags", icon: Tags, color: "pink", show: true },
+                ],
+                quickAccess: [
+                    { name: "Documents récents", href: "/documents?sort=recent", icon: Clock, color: "blue", show: true },
+                    { name: "Les plus consultés", href: "/documents?sort=views", icon: Eye, color: "green", show: true },
+                    { name: "Mes documents", href: "/documents?filter=mine", icon: User, color: "purple", show: true },
+                ]
+            };
+        } else {
+            // Reader
+            return {
+                roleName: "Lecteur",
+                roleColor: "green",
+                documentFolders: [
+                    { name: "Contrats", items: 12, show: true },
+                    { name: "Factures", items: 24, show: true },
+                    { name: "Rapports annuels", items: 8, show: true },
+                ],
+                mainNavigation: [
+                    { name: "Dashboard", href: "/dashboard", icon: Home, color: "blue", show: true },
+                    { name: "Tous les documents", href: "/documents", icon: FileText, color: "green", show: true },
+                    { name: "Catégories", href: "/categories", icon: FolderTree, color: "orange", show: true },
+                    { name: "Tags", href: "/tags", icon: Tags, color: "pink", show: true },
+                ],
+                quickAccess: [
+                    { name: "Documents récents", href: "/documents?sort=recent", icon: Clock, color: "blue", show: true },
+                    { name: "Les plus consultés", href: "/documents?sort=views", icon: Eye, color: "green", show: true },
+                    { name: "Favoris", href: "/documents?favorites=true", icon: Star, color: "yellow", show: true },
+                ]
+            };
+        }
+    };
 
-    // Navigation principale - ADMIN VOIT TOUT
-    const mainNavigation = [
-        {
-            name: "Dashboard",
-            href: "/dashboard",
-            icon: Home,
-            color: "blue",
-            show: true,
-        },
-        {
-            name: "Tous les documents",
-            href: "/documents",
-            icon: FileText,
-            color: "green",
-            show: true,
-        },
-        {
-            name: "Upload",
-            href: "/documents/upload",
-            icon: Upload,
-            color: "purple",
-            show: isAdmin ? true : can.uploadDocuments,
-        },
-        {
-            name: "Catégories",
-            href: "/categories",
-            icon: FolderTree,
-            color: "orange",
-            show: isAdmin ? true : can.viewCategories,
-        },
-        {
-            name: "Tags",
-            href: "/tags",
-            icon: Tags,
-            color: "pink",
-            show: isAdmin ? true : can.viewTags,
-        },
-    ].filter((w) => w.show);
+    const roleConfig = getRoleConfig();
 
-    // Accès rapides - ADMIN VOIT TOUT
-    const quickAccess = [
-        {
-            name: "Documents récents",
-            href: "/documents?sort=recent",
-            icon: Clock,
-            color: "blue",
-            show: true,
-        },
-        {
-            name: "Les plus consultés",
-            href: "/documents?sort=views",
-            icon: Eye,
-            color: "green",
-            show: true,
-        },
-        {
-            name: "Les plus téléchargés",
-            href: "/documents?sort=downloads",
-            icon: Download,
-            color: "purple",
-            show: true,
-        },
-        {
-            name: "En attente de validation",
-            href: "/documents?filter=pending",
-            icon: Filter,
-            color: "orange",
-            show: isAdmin ? true : can.uploadDocuments,
-        },
-    ].filter((f) => f.show);
+    // Dossiers documentaires selon le rôle
+    const documentFolders = roleConfig.documentFolders.filter((f) => f.show);
 
-    // Administration - ADMIN VOIT TOUJOURS
-    const adminNavigation = [
-        {
-            name: "Utilisateurs",
-            href: "/users",
-            icon: Users,
-            color: "red",
-            show: isAdmin ? true : can.viewUsers,
-        },
-        {
-            name: "Historique",
-            href: "/access-logs",
-            icon: History,
-            color: "gray",
-            show: isAdmin ? true : can.viewLogs,
-        },
-        {
-            name: "Statistiques",
-            href: "/stats",
-            icon: BarChart3,
-            color: "blue",
-            show: isAdmin ? true : can.viewStats,
-        },
-        {
-            name: "Paramètres",
-            href: "/settings",
-            icon: Settings,
-            color: "slate",
-            show: isAdmin ? true : can.manageUsers,
-        },
-    ].filter((l) => l.show);
+    // Navigation principale selon le rôle
+    const mainNavigation = roleConfig.mainNavigation.filter((w) => w.show);
+
+    // Accès rapides selon le rôle
+    const quickAccess = roleConfig.quickAccess.filter((w) => w.show);
 
     return (
         <div className="flex h-screen bg-gray-50 dark:bg-gray-900">
@@ -356,33 +343,6 @@ export default function ModernLayout({ children }) {
                             </div>
                         </>
                     )}
-
-                    {/* Administration - TOUJOURS visible pour admin */}
-                    {adminNavigation.length > 0 && sidebarOpen && (
-                        <>
-                            <h2 className="text-xs font-semibold text-gray-400 uppercase tracking-wider mt-6 mb-3">
-                                Administration
-                            </h2>
-                            <nav className="space-y-1">
-                                {adminNavigation.map((item) => (
-                                    <Link
-                                        key={item.name}
-                                        href={item.href}
-                                        className="flex items-center px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
-                                    >
-                                        <div
-                                            className={`w-8 h-8 rounded-lg flex items-center justify-center bg-${item.color}-100 text-${item.color}-600 dark:bg-${item.color}-900/30 dark:text-${item.color}-400`}
-                                        >
-                                            <item.icon size={18} />
-                                        </div>
-                                        <span className="ml-3 text-sm font-medium text-gray-700 dark:text-gray-200">
-                                            {item.name}
-                                        </span>
-                                    </Link>
-                                ))}
-                            </nav>
-                        </>
-                    )}
                 </div>
 
                 {/* User Profile */}
@@ -509,12 +469,21 @@ export default function ModernLayout({ children }) {
                             )}
                         </button>
                         {/* Notifications */}
-                        <button className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg relative">
+                        <button 
+                            className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg relative"
+                            onClick={() => {
+                                if (isAdmin) {
+                                    router.visit('/admin/access-requests');
+                                }
+                            }}
+                        >
                             <Bell
                                 size={18}
                                 className="text-gray-600 dark:text-gray-300"
                             />
-                            <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
+                            {notifications.has_notifications && (
+                                <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
+                            )}
                         </button>
                         <div className="h-8 w-px bg-gray-200 dark:bg-gray-700"></div>
                         <div className="flex items-center space-x-3">
@@ -523,11 +492,7 @@ export default function ModernLayout({ children }) {
                                     {user?.name}
                                 </p>
                                 <p className="text-xs text-gray-500 dark:text-gray-400 capitalize">
-                                    {isAdmin
-                                        ? "Administrateur"
-                                        : user?.roles?.[0] === "contributor"
-                                          ? "Contributeur"
-                                          : "Lecteur"}
+                                    {roleConfig.roleName}
                                 </p>
                             </div>
                             <div className="w-8 h-8 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg flex items-center justify-center text-white">

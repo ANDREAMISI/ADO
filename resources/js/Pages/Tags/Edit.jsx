@@ -1,7 +1,7 @@
 // resources/js/Pages/Tags/Edit.jsx
 import React, { useState, useEffect } from "react";
 import { Link, router, usePage } from "@inertiajs/react";
-import AppLayout from "@/Layouts/AppLayout";
+import ModernLayout from "@/Layouts/ModernLayout";
 import axios from "@/Services/axios";
 import { useToast } from "@/Hooks/useToast";
 import { usePermissions } from "@/Hooks/usePermissions";
@@ -83,17 +83,17 @@ export default function Edit() {
 
     if (loading) {
         return (
-            <AppLayout>
+            <ModernLayout>
                 <div className="flex justify-center items-center h-64">
                     <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
                 </div>
-            </AppLayout>
+            </ModernLayout>
         );
     }
 
     if (!tag) {
         return (
-            <AppLayout>
+            <ModernLayout>
                 <div className="text-center py-12">
                     <p className="text-red-600">Tag non trouvé</p>
                     <Link
@@ -103,12 +103,12 @@ export default function Edit() {
                         Retour à la liste
                     </Link>
                 </div>
-            </AppLayout>
+            </ModernLayout>
         );
     }
 
     return (
-        <AppLayout>
+        <ModernLayout>
             <div className="max-w-2xl mx-auto">
                 {/* En-tête */}
                 <div className="mb-6 flex items-center">
@@ -204,6 +204,6 @@ export default function Edit() {
                     </form>
                 </div>
             </div>
-        </AppLayout>
+        </ModernLayout>
     );
 }

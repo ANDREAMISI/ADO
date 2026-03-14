@@ -1,7 +1,7 @@
 // resources/js/Pages/Documents/Show.jsx
 import React, { useState, useEffect } from "react";
 import { Link, usePage } from "@inertiajs/react";
-import AppLayout from "@/Layouts/AppLayout";
+import ModernLayout from "@/Layouts/ModernLayout";
 import { usePermissions } from "@/Hooks/usePermissions";
 import axios from "@/Services/axios";
 import toast from 'react-hot-toast';
@@ -49,17 +49,17 @@ export default function DocumentShow({ id }) {
 
     if (loading) {
         return (
-            <AppLayout>
+            <ModernLayout>
                 <div className="flex justify-center items-center h-64">
                     <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
                 </div>
-            </AppLayout>
+            </ModernLayout>
         );
     }
 
     if (error || !document) {
         return (
-            <AppLayout>
+            <ModernLayout>
                 <div className="text-center py-12">
                     <p className="text-red-600">
                         {error || "Document non trouvé"}
@@ -71,7 +71,7 @@ export default function DocumentShow({ id }) {
                         Retour à la liste
                     </Link>
                 </div>
-            </AppLayout>
+            </ModernLayout>
         );
     }
 
@@ -80,7 +80,7 @@ export default function DocumentShow({ id }) {
         (isContributor && document.user_id === usePage().props.auth.user?.id);
 
     return (
-        <AppLayout>
+        <ModernLayout>
             {/* En-tête avec navigation et actions */}
             <div className="mb-6 flex items-center justify-between">
                 <div className="flex items-center">
@@ -140,6 +140,6 @@ export default function DocumentShow({ id }) {
                     <DocumentHistory document={document} />
                 </div>
             </div>
-        </AppLayout>
+        </ModernLayout>
     );
 }

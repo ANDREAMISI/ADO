@@ -133,6 +133,9 @@ Route::middleware(['auth'])->prefix('web-api')->name('api.')->group(function () 
     // Statistiques
     Route::get('/stats', [StatsController::class, 'index'])->name('stats.index');
     
+    // Notifications
+    Route::get('/notifications', [AccessRequestController::class, 'notifications'])->name('notifications');
+    
     // Documents
     Route::prefix('documents')->name('documents.')->group(function () {
         Route::get('/', [DocumentController::class, 'index'])->name('index');

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "@inertiajs/react";
-import AppLayout from "@/Layouts/AppLayout";
+import ModernLayout from "@/Layouts/ModernLayout";
 import axios from "@/Services/axios";
 import { usePermissions } from "@/Hooks/usePermissions";
 import { useToast } from "@/Hooks/useToast";
@@ -121,16 +121,16 @@ export default function TagsIndex() {
 
     if (loading) {
         return (
-            <AppLayout>
+            <ModernLayout>
                 <div className="flex justify-center items-center h-64">
                     <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
                 </div>
-            </AppLayout>
+            </ModernLayout>
         );
     }
 
     return (
-        <AppLayout>
+        <ModernLayout>
             {/* En-tête */}
             <div className="mb-8">
                 <div className="flex justify-between items-center">
@@ -385,6 +385,6 @@ export default function TagsIndex() {
                     </div>
                 </div>
             )}
-        </AppLayout>
+        </ModernLayout>
     );
 }

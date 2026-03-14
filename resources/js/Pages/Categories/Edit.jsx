@@ -2,7 +2,7 @@
 import { usePermissions } from '@/Hooks/usePermissions';
 import React, { useState, useEffect } from 'react';
 import { Link } from '@inertiajs/react';
-import AppLayout from '@/Layouts/AppLayout';
+import ModernLayout from '@/Layouts/ModernLayout';
 import axios from '@/Services/axios';
 import { 
     FolderTree, 

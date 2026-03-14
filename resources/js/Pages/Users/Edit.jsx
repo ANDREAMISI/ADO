@@ -1,7 +1,7 @@
 // resources/js/Pages/Users/Edit.jsx
 import React, { useState, useEffect } from "react";
 import { Link, router } from "@inertiajs/react";
-import AdminLayout from "@/Layouts/Roles/AdminLayout"
+import ModernLayout from "@/Layouts/ModernLayout"
 import UserForm from "./Partials/UserForm";
 import { ArrowLeft, Edit2 } from "lucide-react";
 import axios from "@/Services/axios";
@@ -31,17 +31,17 @@ export default function Edit({ id }) {
 
     if (loading) {
         return (
-            <AdminLayout>
+            <ModernLayout>
                 <div className="flex justify-center items-center h-64">
                     <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
                 </div>
-            </AdminLayout>
+            </ModernLayout>
         );
     }
 
     if (!user) {
         return (
-            <AdminLayout>
+            <ModernLayout>
                 <div className="text-center py-12">
                     <p className="text-red-600">Utilisateur non trouvé</p>
                     <Link
@@ -51,12 +51,12 @@ export default function Edit({ id }) {
                         Retour à la liste
                     </Link>
                 </div>
-            </AdminLayout>
+            </ModernLayout>
         );
     }
 
     return (
-        <AdminLayout>
+        <ModernLayout>
             <div className="max-w-3xl mx-auto">
                 {/* En-tête */}
                 <div className="mb-6 flex items-center">
@@ -86,6 +86,6 @@ export default function Edit({ id }) {
                     />
                 </div>
             </div>
-        </AdminLayout>
+        </ModernLayout>
     );
 }

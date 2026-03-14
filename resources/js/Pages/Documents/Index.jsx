@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link, usePage } from "@inertiajs/react";
-import FloeLayout from "@/Layouts/FloeLayout";
+import ModernLayout from "@/Layouts/ModernLayout";
 import { usePermissions } from "@/Hooks/usePermissions";
 import axios from "@/Services/axios";
 import DocumentViewers from "./Partials/DocumentViewers";
@@ -245,7 +245,7 @@ export default function DocumentsIndex() {
     };
 
     return (
-        <FloeLayout>
+        <ModernLayout>
             {/* En-tête */}
             <div className="mb-8">
                 <div className="flex justify-between items-center">
@@ -1014,6 +1014,6 @@ export default function DocumentsIndex() {
                 }}
                 type="download"
             />
-        </FloeLayout>
+        </ModernLayout>
     );
 }

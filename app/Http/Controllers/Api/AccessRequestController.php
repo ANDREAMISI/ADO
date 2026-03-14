@@ -289,4 +289,29 @@ class AccessRequestController extends Controller
             return response()->json(['data' => [], 'meta' => []], 500);
         }
     }
+
+    /**
+     * Get notifications count for current user
+     */
+    public function notifications()
+    {
+        try {
+            $user = auth()->user();
+            $count = 0;
+
+            // For admins, count pending access requests
+            if ($user->hasRole('admin')) {
+                $count = AccessRequest::where('status', 'pending')->count();
+            }
+
+            return response()->json([
+                'count' => $count,
+                'has_notifications' => $count > 0
+            ]);
+
+        } catch (\Exception $e) {
+            Log::error('Erreur récupération notifications:', ['error' => $e->getMessage()]);
+            return response()->json(['count' => 0, 'has_notifications' => false], 500);
+        }
+    }
 }

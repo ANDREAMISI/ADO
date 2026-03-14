@@ -1,7 +1,7 @@
 // resources/js/Pages/Users/Index.jsx
 import React, { useState, useEffect } from "react";
 import { Link, router } from "@inertiajs/react";
-import AdminLayout from "@/Layouts/Roles/AdminLayout";
+import ModernLayout from "@/Layouts/ModernLayout";
 import { usePermissions } from "@/Hooks/usePermissions";
 import axios from "@/Services/axios";
 import toast from 'react-hot-toast';
@@ -168,7 +168,7 @@ export default function UsersIndex() {
         filters.date;
 
     return (
-        <AdminLayout>
+        <ModernLayout>
             {/* En-tête */}
             <div className="mb-8">
                 <div className="flex justify-between items-center">
@@ -577,6 +577,6 @@ export default function UsersIndex() {
                     )}
                 </>
             )}
-        </AdminLayout>
+        </ModernLayout>
     );
 }

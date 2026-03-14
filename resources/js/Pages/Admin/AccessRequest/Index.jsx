@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import AppLayout from "@/Layouts/AppLayout";
+import ModernLayout from "@/Layouts/ModernLayout";
 import axios from "@/Services/axios";
 import toast from 'react-hot-toast';
 import {
@@ -78,7 +78,7 @@ export default function AccessRequests() {
     };
 
     return (
-        <AppLayout>
+        <ModernLayout>
             <div className="p-6">
                 <h1 className="text-2xl font-bold text-gray-800 mb-6">
                     Demandes d'accès
@@ -175,6 +175,6 @@ export default function AccessRequests() {
                     </div>
                 )}
             </div>
-        </AppLayout>
+        </ModernLayout>
     );
 }

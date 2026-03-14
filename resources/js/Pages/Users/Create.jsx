@@ -1,7 +1,7 @@
 // resources/js/Pages/Users/Create.jsx
 import React from "react";
 import { Link, router } from "@inertiajs/react";
-import AdminLayout from "@/Layouts/Roles/AdminLayout";
+import ModernLayout from "@/Layouts/ModernLayout";
 import UserForm from "./Partials/UserForm";
 import { ArrowLeft, UserPlus } from "lucide-react";
 
@@ -11,7 +11,7 @@ export default function Create() {
     };
 
     return (
-        <AdminLayout>
+        <ModernLayout>
             <div className="max-w-3xl mx-auto">
                 {/* En-tête */}
                 <div className="mb-6 flex items-center">
@@ -43,6 +43,6 @@ export default function Create() {
                     />
                 </div>
             </div>
-        </AdminLayout>
+        </ModernLayout>
     );
 }

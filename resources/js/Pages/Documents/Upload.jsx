@@ -2,7 +2,7 @@ import React, { useState, useCallback, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useDropzone } from "react-dropzone";
 import { Link, router, usePage } from "@inertiajs/react";
-import AppLayout from "@/Layouts/AppLayout";
+import ModernLayout from "@/Layouts/ModernLayout";
 import axios from "@/Services/axios";
 import { useToast } from "@/Hooks/useToast";
 import toast from "react-hot-toast";
@@ -219,7 +219,7 @@ export default function DocumentUpload() {
     };
 
     return (
-        <AppLayout>
+        <ModernLayout>
             <div className="max-w-3xl mx-auto">
                 <div className="mb-6 flex items-center">
                     <Link
@@ -475,6 +475,6 @@ export default function DocumentUpload() {
                     </form>
                 </div>
             </div>
-        </AppLayout>
+        </ModernLayout>
     );
 }

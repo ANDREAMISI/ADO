@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "@inertiajs/react";
-import FloeLayout from "@/Layouts/FloeLayout";
+import ModernLayout from "@/Layouts/ModernLayout";
 import { usePermissions } from "@/Hooks/usePermissions";
 import axios from "@/Services/axios";
 import {
@@ -218,16 +218,16 @@ export default function Dashboard() {
 
     if (loading) {
         return (
-            <FloeLayout>
+            <ModernLayout>
                 <div className="flex items-center justify-center h-64">
                     <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
                 </div>
-            </FloeLayout>
+            </ModernLayout>
         );
     }
 
     return (
-        <FloeLayout>
+        <ModernLayout>
             {/* Welcome Section */}
             <div className="mb-8">
                 <h1 className="text-2xl font-semibold text-gray-800 dark:text-white">
@@ -487,6 +487,6 @@ export default function Dashboard() {
                     </div>
                 )}
             </div>
-        </FloeLayout>
+        </ModernLayout>
     );
 }

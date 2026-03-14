@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link, router } from "@inertiajs/react";
 import { usePermissions } from "@/Hooks/usePermissions";
 import { useDarkMode } from "@/Hooks/useDarkMode";
+import axios from "axios";
 import {
     Home,
     FileText,
@@ -35,6 +36,21 @@ export default function AdminLayout({ children }) {
     const [sidebarOpen, setSidebarOpen] = useState(true);
     const [profileMenuOpen, setProfileMenuOpen] = useState(false);
     const [searchQuery, setSearchQuery] = useState("");
+    const [notifications, setNotifications] = useState({ count: 0, has_notifications: false });
+
+    // Fetch notifications on mount
+    useEffect(() => {
+        const fetchNotifications = async () => {
+            try {
+                const response = await axios.get('/web-api/notifications');
+                setNotifications(response.data);
+            } catch (error) {
+                console.error('Erreur chargement notifications:', error);
+            }
+        };
+
+        fetchNotifications();
+    }, []);
 
     // Fonction de déconnexion avec Inertia
     const handleLogout = (e) => {
@@ -385,7 +401,9 @@ export default function AdminLayout({ children }) {
                                 size={18}
                                 className="text-gray-600 dark:text-gray-300"
                             />
-                            <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
+                            {notifications.has_notifications && (
+                                <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
+                            )}
                         </button>
                         <div className="h-8 w-px bg-gray-200 dark:bg-gray-700"></div>
                         <div className="flex items-center space-x-3">

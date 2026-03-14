@@ -1,7 +1,7 @@
 import { usePermissions } from "@/Hooks/usePermissions";
 import React, { useState, useEffect } from "react";
 import { Link } from "@inertiajs/react";
-import AppLayout from "@/Layouts/AppLayout";
+import ModernLayout from "@/Layouts/ModernLayout";
 import axios from "@/Services/axios";
 import { useToast } from "@/Hooks/useToast";
 import toast from "react-hot-toast";
@@ -226,16 +226,16 @@ export default function CategoriesIndex() {
 
     if (loading) {
         return (
-            <AppLayout>
+            <ModernLayout>
                 <div className="flex justify-center items-center h-64">
                     <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
                 </div>
-            </AppLayout>
+            </ModernLayout>
         );
     }
 
     return (
-        <AppLayout>
+        <ModernLayout>
             {/* En-tête */}
             <div className="mb-8">
                 <div className="flex justify-between items-center">
@@ -411,6 +411,6 @@ export default function CategoriesIndex() {
                     </div>
                 </div>
             )}
-        </AppLayout>
+        </ModernLayout>
     );
 }

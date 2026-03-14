@@ -1,4 +1,4 @@
-import AppLayout from "@/Layouts/AppLayout";
+import ModernLayout from "@/Layouts/ModernLayout";
 import { Head, Link } from "@inertiajs/react";
 import DeleteUserForm from "./Partials/DeleteUserForm";
 import UpdatePasswordForm from "./Partials/UpdatePasswordForm";
@@ -7,7 +7,7 @@ import { ArrowLeft, X, User } from "lucide-react";
 
 export default function Edit({ mustVerifyEmail, status }) {
     return (
-        <AppLayout>
+        <ModernLayout>
             <Head title="Profile" />
             <div className="py-6">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -54,6 +54,6 @@ export default function Edit({ mustVerifyEmail, status }) {
                     </div>
                 </div>
             </div>
-        </AppLayout>
+        </ModernLayout>
     );
 }
