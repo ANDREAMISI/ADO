@@ -35,7 +35,11 @@ export default function DocumentViewers({
     };
 
     const formatRelativeTime = (dateString) => {
+        if (!dateString) return "Date inconnue";
+
         const date = new Date(dateString);
+        if (isNaN(date.getTime())) return "Date inconnue";
+
         const now = new Date();
         const diffMs = now - date;
         const diffSec = Math.floor(diffMs / 1000);

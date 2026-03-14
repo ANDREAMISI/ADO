@@ -337,6 +337,18 @@ class DocumentController extends Controller
         try {
             $document->increment('download_count');
 
+            // Enregistrer le téléchargement
+            if (class_exists('App\Models\DocumentView')) {
+                \App\Models\DocumentView::create([
+                    'document_id' => $document->id,
+                    'user_id' => auth()->id(),
+                    'action_type' => 'download',
+                    'ip_address' => request()->ip(),
+                    'user_agent' => request()->userAgent(),
+                    'viewed_at' => now(),
+                ]);
+            }
+
             // Serve the file directly via Laravel to avoid relying on a public storage symlink.
             return Storage::disk('public')->download(
                 $document->file_path,
@@ -365,8 +377,10 @@ class DocumentController extends Controller
                 ->map(function ($view) {
                     return [
                         'id' => $view->id,
-                        'user' => $view->user,
-                        'created_at' => $view->viewed_at,
+                        'user_name' => optional($view->user)->name,
+                        'user_email' => optional($view->user)->email,
+                        'user_avatar' => null,
+                        'viewed_at' => optional($view->viewed_at ?? $view->created_at)->toIso8601String(),
                         'action_type' => $view->action_type,
                     ];
                 });

@@ -760,8 +760,11 @@ export default function DocumentsIndex() {
                                     <Download size={14} className="mr-1" />
                                     <span
                                         className="hover:text-green-600 dark:hover:text-green-400 transition-colors cursor-pointer"
-                                        title="Télécharger"
-                                        onClick={() => handleDownload(doc.id)}
+                                        title="Voir les téléchargements"
+                                        onClick={() => {
+                                            setSelectedDocumentId(doc.id);
+                                            setShowDownloadsModal(true);
+                                        }}
                                     >
                                         {doc.download_count || 0}
                                     </span>
