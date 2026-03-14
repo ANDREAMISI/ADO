@@ -39,19 +39,25 @@ export default function ModernLayout({ children }) {
     const [searchResults, setSearchResults] = useState([]);
     const [showSearchResults, setShowSearchResults] = useState(false);
     const [notifications, setNotifications] = useState({ count: 0, has_notifications: false });
+    const [categories, setCategories] = useState([]);
 
-    // Fetch notifications on mount
+    // Fetch notifications + stats (for category counts) on mount
     useEffect(() => {
-        const fetchNotifications = async () => {
+        const fetchData = async () => {
             try {
-                const response = await axios.get('/web-api/notifications');
-                setNotifications(response.data);
+                const [notificationsRes, statsRes] = await Promise.all([
+                    axios.get('/web-api/notifications'),
+                    axios.get('/web-api/stats'),
+                ]);
+
+                setNotifications(notificationsRes.data);
+                setCategories(statsRes.data.categories || []);
             } catch (error) {
-                console.error('Erreur chargement notifications:', error);
+                console.error('Erreur chargement notifications/stats:', error);
             }
         };
 
-        fetchNotifications();
+        fetchData();
     }, []);
 
     // Fonction de déconnexion avec Inertia
@@ -86,12 +92,6 @@ export default function ModernLayout({ children }) {
             return {
                 roleName: "Administrateur",
                 roleColor: "red",
-                documentFolders: [
-                    { name: "Contrats", items: 12, show: true },
-                    { name: "Factures", items: 24, show: true },
-                    { name: "Rapports annuels", items: 8, show: true },
-                    { name: "Documents sensibles", items: 5, show: true },
-                ],
                 mainNavigation: [
                     { name: "Dashboard", href: "/dashboard", icon: Home, color: "blue", show: true },
                     { name: "Tous les documents", href: "/documents", icon: FileText, color: "green", show: true },
@@ -112,11 +112,6 @@ export default function ModernLayout({ children }) {
             return {
                 roleName: "Contributeur",
                 roleColor: "blue",
-                documentFolders: [
-                    { name: "Contrats", items: 12, show: true },
-                    { name: "Factures", items: 24, show: true },
-                    { name: "Rapports annuels", items: 8, show: true },
-                ],
                 mainNavigation: [
                     { name: "Dashboard", href: "/dashboard", icon: Home, color: "blue", show: true },
                     { name: "Tous les documents", href: "/documents", icon: FileText, color: "green", show: true },
@@ -135,11 +130,6 @@ export default function ModernLayout({ children }) {
             return {
                 roleName: "Lecteur",
                 roleColor: "green",
-                documentFolders: [
-                    { name: "Contrats", items: 12, show: true },
-                    { name: "Factures", items: 24, show: true },
-                    { name: "Rapports annuels", items: 8, show: true },
-                ],
                 mainNavigation: [
                     { name: "Dashboard", href: "/dashboard", icon: Home, color: "blue", show: true },
                     { name: "Tous les documents", href: "/documents", icon: FileText, color: "green", show: true },
@@ -157,8 +147,12 @@ export default function ModernLayout({ children }) {
 
     const roleConfig = getRoleConfig();
 
-    // Dossiers documentaires selon le rôle
-    const documentFolders = roleConfig.documentFolders.filter((f) => f.show);
+    // Dossiers documentaires dynamiques (catégories + compteurs)
+    const documentFolders = categories.map((cat) => ({
+        name: cat.name,
+        items: cat.documents_count || 0,
+        show: true,
+    }));
 
     // Navigation principale selon le rôle
     const mainNavigation = roleConfig.mainNavigation.filter((w) => w.show);
@@ -206,7 +200,7 @@ export default function ModernLayout({ children }) {
                     loading: {
                         duration: Infinity,
                         style: {
-                            background: "#3b82f6",
+                            background: "#3b82f6", 
                             color: "#fff",
                         },
                     },
