@@ -181,7 +181,7 @@ export default function AccessRequest() {
                                     placeholder="Nom de l'entreprise"
                                 />
                             </div>
-                        </div>
+                        </div>   
 
                         {/* Motif */}
                         <div>

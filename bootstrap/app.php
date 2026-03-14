@@ -13,14 +13,18 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->alias([
-            'role' => \App\Http\Middleware\RoleMiddleware::class
+            'role' => \App\Http\Middleware\RoleMiddleware::class,
+            'active' => \App\Http\Middleware\ActiveUserMiddleware::class
         ]);
         $middleware->web(append: [
             \App\Http\Middleware\HandleInertiaRequests::class,
             \Illuminate\Http\Middleware\AddLinkHeadersForPreloadedAssets::class,
         ]);
 
-        //
+        // Exclure la route de demande d'accès du CSRF pour les utilisateurs non connectés
+        $middleware->validateCsrfTokens(except: [
+            'web-api/access-request',
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //

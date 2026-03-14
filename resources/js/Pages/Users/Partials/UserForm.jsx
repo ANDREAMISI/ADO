@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import { Link } from "@inertiajs/react";
 import { Save, X, User, Mail, Lock, Shield, AlertCircle } from "lucide-react";
 import axios from "@/Services/axios";
+import toast from 'react-hot-toast';
 
 export default function UserForm({ user = null, onSuccess, onCancel }) {
     const [formData, setFormData] = useState({
@@ -84,7 +85,7 @@ export default function UserForm({ user = null, onSuccess, onCancel }) {
                 setErrors(error.response.data.errors || {});
             } else {
                 console.error("Erreur:", error);
-                alert("Une erreur est survenue");
+                toast.error("Une erreur est survenue");
             }
         } finally {
             setLoading(false);

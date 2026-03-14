@@ -96,7 +96,7 @@ export default function Welcome() {
 
         try {
             // Appel à la route PUBLIQUE pour la demande d'accès
-            const response = await axios.post("/access-request", {
+            const response = await axios.post("/web-api/access-request", {
                 name: formData.name,
                 email: formData.email,
                 company: formData.company,

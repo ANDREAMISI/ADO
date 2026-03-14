@@ -97,14 +97,6 @@ export default function CategoriesIndex() {
     };
 
     const handleDelete = async (id) => {
-        if (
-            !window.confirm(
-                "Êtes-vous sûr de vouloir supprimer cette catégorie ?",
-            )
-        ) {
-            return;
-        }
-
         try {
             await axios.delete(`/web-api/categories/${id}`);
             toastHook.success("Catégorie supprimée avec succès");

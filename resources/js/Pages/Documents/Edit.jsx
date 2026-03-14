@@ -3,6 +3,7 @@ import { useForm } from "@inertiajs/react";
 import FloeLayout from "@/Layouts/FloeLayout";
 import { usePermissions } from "@/Hooks/usePermissions";
 import axios from "@/Services/axios";
+import toast from 'react-hot-toast';
 import { FileText, X, Tag, Save } from "lucide-react";
 
 export default function Edit({ id }) {
@@ -86,9 +87,9 @@ export default function Edit({ id }) {
         } catch (error) {
             console.error("Erreur mise à jour:", error);
             if (error.response?.data?.message) {
-                alert(error.response.data.message);
+                toast.error(error.response.data.message);
             } else {
-                alert("Erreur lors de la mise à jour");
+                toast.error("Erreur lors de la mise à jour");
             }
         } finally {
             setSubmitting(false);

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import AppLayout from "@/Layouts/AppLayout";
 import axios from "@/Services/axios";
+import toast from 'react-hot-toast';
 import {
     CheckCircle,
     XCircle,
@@ -22,7 +23,7 @@ export default function AccessRequests() {
 
     const fetchRequests = async () => {
         try {
-            const response = await axios.get("/web-api/admin/access-requests");
+            const response = await axios.get("/web-api/users/access-requests");
             setRequests(response.data.data || []);
         } catch (error) {
             console.error("Erreur chargement:", error);
@@ -32,26 +33,22 @@ export default function AccessRequests() {
     };
 
     const handleApprove = async (id) => {
-        if (!confirm("Approuver cette demande ?")) return;
-
         try {
-            await axios.post(`/web-api/admin/access-requests/${id}/approve`);
+            await axios.post(`/web-api/users/access-requests/${id}/approve`);
             fetchRequests();
         } catch (error) {
-            alert("Erreur lors de l'approbation");
+            toast.error("Erreur lors de l'approbation");
         }
     };
 
     const handleReject = async (id) => {
-        const notes = prompt("Motif du rejet (optionnel) :");
-
         try {
-            await axios.post(`/web-api/admin/access-requests/${id}/reject`, {
-                notes,
+            await axios.post(`/web-api/users/access-requests/${id}/reject`, {
+                notes: null,
             });
             fetchRequests();
         } catch (error) {
-            alert("Erreur lors du rejet");
+            toast.error("Erreur lors du rejet");
         }
     };
 

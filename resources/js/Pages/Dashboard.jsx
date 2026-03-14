@@ -481,7 +481,7 @@ export default function Dashboard() {
                                     <p className="text-xs text-gray-400">
                                         Il y a 1 jour
                                     </p>
-                                </div>
+                                </div>   
                             </div>
                         </div>
                     </div>

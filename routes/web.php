@@ -20,10 +20,10 @@ Route::get('/', function () {
 })->name('home');
 
 // Routes pour les demandes d'accès
-Route::post('/access-request', [AccessRequestController::class, 'store']);
+Route::post('/web-api/access-request', [AccessRequestController::class, 'store']);
 
 // Routes protégées par authentification
-Route::middleware(['auth'])->group(function () {
+Route::middleware(['auth', 'active'])->group(function () {
     // Dashboard
     Route::get('/dashboard', function () {
         return Inertia::render('Dashboard');

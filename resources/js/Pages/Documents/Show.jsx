@@ -4,6 +4,7 @@ import { Link, usePage } from "@inertiajs/react";
 import AppLayout from "@/Layouts/AppLayout";
 import { usePermissions } from "@/Hooks/usePermissions";
 import axios from "@/Services/axios";
+import toast from 'react-hot-toast';
 import DocumentInfo from "./Partials/DocumentInfo";
 import DocumentTags from "./Partials/DocumentTags";
 import DocumentPreview from "./Partials/DocumentPreview";
@@ -37,16 +38,12 @@ export default function DocumentShow({ id }) {
     };
 
     const handleDelete = async () => {
-        if (!confirm("Êtes-vous sûr de vouloir supprimer ce document ?")) {
-            return;
-        }
-
         try {
             await axios.delete(`/web-api/documents/${id}`);
             window.location.href = "/documents";
         } catch (err) {
             console.error("Erreur suppression:", err);
-            alert("Erreur lors de la suppression");
+            toast.error("Erreur lors de la suppression");
         }
     };
 

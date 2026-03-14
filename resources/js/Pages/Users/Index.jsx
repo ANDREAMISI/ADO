@@ -4,6 +4,7 @@ import { Link, router } from "@inertiajs/react";
 import AdminLayout from "@/Layouts/Roles/AdminLayout";
 import { usePermissions } from "@/Hooks/usePermissions";
 import axios from "@/Services/axios";
+import toast from 'react-hot-toast';
 import {
     Users,
     UserPlus,
@@ -116,34 +117,18 @@ export default function UsersIndex() {
     };
 
     const handleToggleActive = async (userId, currentStatus) => {
-        if (
-            !confirm(
-                `Voulez-vous ${currentStatus ? "désactiver" : "activer"} ce compte ?`,
-            )
-        ) {
-            return;
-        }
-
         try {
             await axios.patch(`/web-api/users/${userId}/toggle-active`);
             fetchUsers(pagination.current_page);
         } catch (error) {
             console.error("Erreur:", error);
-            alert("Erreur lors de la modification du statut");
+            toast.error("Erreur lors de la modification du statut");
         }
     };
 
     const handleDelete = async (userId, userName) => {
         if (userId === currentUser?.id) {
-            alert("Vous ne pouvez pas supprimer votre propre compte");
-            return;
-        }
-
-        if (
-            !confirm(
-                `Êtes-vous sûr de vouloir supprimer l'utilisateur ${userName} ?`,
-            )
-        ) {
+            toast.error("Vous ne pouvez pas supprimer votre propre compte");
             return;
         }
 
@@ -152,7 +137,7 @@ export default function UsersIndex() {
             fetchUsers(pagination.current_page);
         } catch (error) {
             console.error("Erreur:", error);
-            alert("Erreur lors de la suppression");
+            toast.error("Erreur lors de la suppression");
         }
     };
 

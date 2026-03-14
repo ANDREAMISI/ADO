@@ -17,7 +17,8 @@ class AccessRequest extends Model
         'status',
         'admin_notes',
         'approved_at',
-        'approved_by'
+        'approved_by',
+        'user_id'
     ];
 
     protected $casts = [
@@ -29,5 +30,10 @@ class AccessRequest extends Model
     public function approver()
     {
         return $this->belongsTo(User::class, 'approved_by');
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id');
     }
 }

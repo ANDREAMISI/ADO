@@ -10,6 +10,15 @@ class RoleMiddleware
 {
     public function handle(Request $request, Closure $next, ...$roles)
     {
+        \Log::info('RoleMiddleware check', [
+            'url' => $request->fullUrl(),
+            'method' => $request->method(),
+            'authenticated' => \Auth::check(),
+            'user' => \Auth::check() ? \Auth::user()->name : null,
+            'user_roles' => \Auth::check() ? \Auth::user()->getRoleNames()->toArray() : [],
+            'required_roles' => $roles
+        ]);
+
         if (!Auth::check()) {
             return response()->json(['message' => 'Non authentifié'], 401);
         }

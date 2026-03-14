@@ -105,10 +105,6 @@ export default function TagsIndex() {
     };
 
     const handleDelete = async (id) => {
-        if (!window.confirm("Êtes-vous sûr de vouloir supprimer ce tag ?")) {
-            return;
-        }
-
         try {
             await axios.delete(`/web-api/tags/${id}`);
             toastHook.success("Tag supprimé avec succès");
