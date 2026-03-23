@@ -40,20 +40,30 @@ export default function ModernLayout({ children }) {
     const [showSearchResults, setShowSearchResults] = useState(false);
     const [notifications, setNotifications] = useState({ count: 0, has_notifications: false });
     const [categories, setCategories] = useState([]);
+    const [stats, setStats] = useState(null);
+    const [showStats, setShowStats] = useState(false);
+    const [showQuickAccess, setShowQuickAccess] = useState(false);
+    const [recentDocuments, setRecentDocuments] = useState([]);
+    const [popularDocuments, setPopularDocuments] = useState([]);
 
-    // Fetch notifications + stats (for category counts) on mount
+    // Fetch notifications + stats + recent/popular docs on mount
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const [notificationsRes, statsRes] = await Promise.all([
+                const [notificationsRes, statsRes, recentRes, popularRes] = await Promise.all([
                     axios.get('/web-api/notifications'),
                     axios.get('/web-api/stats'),
+                    axios.get('/web-api/documents?per_page=3&sort_by=created_at&sort_order=desc'),
+                    axios.get('/web-api/documents?per_page=3&sort_by=view_count&sort_order=desc'),
                 ]);
 
                 setNotifications(notificationsRes.data);
+                setStats(statsRes.data);
                 setCategories(statsRes.data.categories || []);
+                setRecentDocuments(recentRes.data.data || []);
+                setPopularDocuments(popularRes.data.data || []);
             } catch (error) {
-                console.error('Erreur chargement notifications/stats:', error);
+                console.error('Erreur chargement données:', error);
             }
         };
 
@@ -165,7 +175,7 @@ export default function ModernLayout({ children }) {
             {/* Ajoute le Toaster ici - il sera global */}
             <Toaster
                 position="top-right"
-                reverseOrder={false}
+                reverseOrder={false} 
                 gutter={8}
                 containerClassName=""
                 containerStyle={{}}
@@ -313,29 +323,157 @@ export default function ModernLayout({ children }) {
                         ))}
                     </nav>
 
-                    {/* Accès rapides */}
-                    {sidebarOpen && quickAccess.length > 0 && (
-                        <>
-                            <h2 className="text-xs font-semibold text-gray-400 uppercase tracking-wider mt-6 mb-3">
-                                Accès rapides
-                            </h2>
-                            <div className="space-y-2">
-                                {quickAccess.map((item, idx) => (
-                                    <Link
-                                        key={idx}
-                                        href={item.href}
-                                        className="flex items-center px-3 py-2 text-sm text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
-                                    >
-                                        <div
-                                            className={`w-6 h-6 rounded-lg flex items-center justify-center mr-3 bg-${item.color}-100 text-${item.color}-600 dark:bg-${item.color}-900/30 dark:text-${item.color}-400`}
-                                        >
-                                            <item.icon size={14} />
+                    {/* Statistiques */}
+                    {sidebarOpen && (
+                        <div className="mt-6">
+                            <button
+                                onClick={() => setShowStats(!showStats)}
+                                className="flex items-center justify-between w-full px-3 py-2 text-xs font-semibold text-gray-400 uppercase tracking-wider hover:text-gray-600 dark:hover:text-gray-200 transition-colors"
+                            >
+                                <span>Statistiques</span>
+                                <ChevronDown
+                                    size={14}
+                                    className={`transform transition-transform ${showStats ? 'rotate-180' : ''}`}
+                                />
+                            </button>
+                            {showStats && stats && (
+                                <div className="mt-3 space-y-3 px-3">
+                                    {/* Statistiques détaillées */}
+                                    <div className="grid grid-cols-2 gap-3">
+                                        <div className="bg-blue-50 dark:bg-blue-900/20 rounded-lg p-3 text-center">
+                                            <div className="text-lg font-semibold text-blue-600 dark:text-blue-400">
+                                                {stats.total_documents}
+                                            </div>
+                                            <div className="text-xs text-blue-600/70 dark:text-blue-400/70">
+                                                Documents
+                                            </div>
                                         </div>
-                                        {item.name}
-                                    </Link>
-                                ))}
-                            </div>
-                        </>
+                                        <div className="bg-green-50 dark:bg-green-900/20 rounded-lg p-3 text-center">
+                                            <div className="text-lg font-semibold text-green-600 dark:text-green-400">
+                                                {stats.total_categories}
+                                            </div>
+                                            <div className="text-xs text-green-600/70 dark:text-green-400/70">
+                                                Catégories
+                                            </div>
+                                        </div>
+                                        <div className="bg-purple-50 dark:bg-purple-900/20 rounded-lg p-3 text-center">
+                                            <div className="text-lg font-semibold text-purple-600 dark:text-purple-400">
+                                                {stats.total_users}
+                                            </div>
+                                            <div className="text-xs text-purple-600/70 dark:text-purple-400/70">
+                                                Utilisateurs
+                                            </div>
+                                        </div>
+                                        <div className="bg-orange-50 dark:bg-orange-900/20 rounded-lg p-3 text-center">
+                                            <div className="text-lg font-semibold text-orange-600 dark:text-orange-400">
+                                                {stats.total_tags}
+                                            </div>
+                                            <div className="text-xs text-orange-600/70 dark:text-orange-400/70">
+                                                Tags
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {/* Répartition par catégories */}
+                                    {stats.categories && stats.categories.length > 0 && (
+                                        <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-3">
+                                            <h4 className="text-xs font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                                Par catégorie
+                                            </h4>
+                                            <div className="space-y-2">
+                                                {stats.categories.slice(0, 3).map((cat) => (
+                                                    <div key={cat.id} className="flex justify-between items-center text-xs">
+                                                        <span className="text-gray-600 dark:text-gray-400 truncate">
+                                                            {cat.name}
+                                                        </span>
+                                                        <span className="text-gray-500 dark:text-gray-500 font-medium">
+                                                            {cat.documents_count}
+                                                        </span>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        </div>
+                                    )}
+                                </div>
+                            )}
+                        </div>
+                    )}
+
+                    {/* Accès rapides */}
+                    {sidebarOpen && (
+                        <div className="mt-6">
+                            <button
+                                onClick={() => setShowQuickAccess(!showQuickAccess)}
+                                className="flex items-center justify-between w-full px-3 py-2 text-xs font-semibold text-gray-400 uppercase tracking-wider hover:text-gray-600 dark:hover:text-gray-200 transition-colors"
+                            >
+                                <span>Accès rapides</span>
+                                <ChevronDown
+                                    size={14}
+                                    className={`transform transition-transform ${showQuickAccess ? 'rotate-180' : ''}`}
+                                />
+                            </button>
+                            {showQuickAccess && (
+                                <div className="mt-3 space-y-3 px-3">
+                                    {/* Liens de navigation rapide */}
+                                    <div className="space-y-2">
+                                        {quickAccess.map((item, idx) => (
+                                            <Link
+                                                key={idx}
+                                                href={item.href}
+                                                className="flex items-center px-3 py-2 text-sm text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
+                                            >
+                                                <div
+                                                    className={`w-6 h-6 rounded-lg flex items-center justify-center mr-3 bg-${item.color}-100 text-${item.color}-600 dark:bg-${item.color}-900/30 dark:text-${item.color}-400`}
+                                                >
+                                                    <item.icon size={14} />
+                                                </div>
+                                                {item.name}
+                                            </Link>
+                                        ))}
+                                    </div>
+
+                                    {/* Aperçu des documents récents */}
+                                    {recentDocuments.length > 0 && (
+                                        <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-3">
+                                            <h4 className="text-xs font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                                Documents récents
+                                            </h4>
+                                            <div className="space-y-2">
+                                                {recentDocuments.slice(0, 2).map((doc) => (
+                                                    <Link
+                                                        key={doc.id}
+                                                        href={`/documents/${doc.id}`}
+                                                        className="block text-xs text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200 truncate"
+                                                    >
+                                                        {doc.title}
+                                                    </Link>
+                                                ))}
+                                            </div>
+                                        </div>
+                                    )}
+
+                                    {/* Aperçu des documents populaires */}
+                                    {popularDocuments.length > 0 && (
+                                        <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-3">
+                                            <h4 className="text-xs font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                                Les plus consultés
+                                            </h4>
+                                            <div className="space-y-2">
+                                                {popularDocuments.slice(0, 2).map((doc) => (
+                                                    <Link
+                                                        key={doc.id}
+                                                        href={`/documents/${doc.id}`}
+                                                        className="block text-xs text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200 truncate"
+                                                    >
+                                                        {doc.title}
+                                                    </Link>
+                                                ))}
+                                            </div>
+                                        </div>
+                                    )}
+                                </div>
+                            )}
+                        </div>
                     )}
                 </div>
 

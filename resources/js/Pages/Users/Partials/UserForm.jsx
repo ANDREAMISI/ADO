@@ -113,7 +113,7 @@ export default function UserForm({ user = null, onSuccess, onCancel }) {
                         className={`w-full pl-10 pr-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 ${
                             errors.name ? "border-red-500" : "border-gray-300"
                         }`}
-                        placeholder="Jean Dupont"
+                        placeholder="Andre Amisi"
                     />
                 </div>
                 {errors.name && (
@@ -143,7 +143,7 @@ export default function UserForm({ user = null, onSuccess, onCancel }) {
                         className={`w-full pl-10 pr-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 ${
                             errors.email ? "border-red-500" : "border-gray-300"
                         }`}
-                        placeholder="jean@exemple.com"
+                        placeholder="andreamisi32@exemple.com"
                     />
                 </div>
                 {errors.email && (
@@ -186,7 +186,7 @@ export default function UserForm({ user = null, onSuccess, onCancel }) {
                     />
                 </div>
                 {errors.password && (
-                    <p className="mt-1 text-sm text-red-600 flex items-center">
+                    <p className="mt-1 text-sm text-red-600 flex items-center"> 
                         <AlertCircle size={14} className="mr-1" />
                         {errors.password[0]}
                     </p>
@@ -199,10 +199,10 @@ export default function UserForm({ user = null, onSuccess, onCancel }) {
                     Confirmer le mot de passe{" "}
                     {!user && <span className="text-red-500">*</span>}
                 </label>
-                <div className="relative">
+                <div className="relative">   
                     <Lock
                         size={18}
-                        className="absolute left-3 top-3 text-gray-400"
+                        className="absolute left-3 top-3 text-gray-400" 
                     />
                     <input
                         type="password"
